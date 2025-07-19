@@ -4,6 +4,6 @@ namespace App10.Api.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public string Name { get; set; } = default!;
+        public string Name { get; set; } = string.Empty;
     }
 }
