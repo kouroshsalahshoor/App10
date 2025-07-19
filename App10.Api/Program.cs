@@ -1,4 +1,5 @@
 using App10.Api.Data;
+using App10.Api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
