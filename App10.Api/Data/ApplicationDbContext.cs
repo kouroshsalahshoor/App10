@@ -14,14 +14,16 @@ namespace App10.Api.Data
 
             for (var i = 1; i <= 10; i++)
             {
+                var index = ((i - 1) % 3) + 1;
+
                 modelBuilder.Entity<Product>().HasData(
                     new Product
                     {
                         Id = i,
                         Name = $"Product {i}",
-                        Category = $"Category {(i % 3) + 1}",
-                        Tag = $"Tag {(i % 3) + 1}",
-                        Price = 1000.00 + ((i % 3) + 1),
+                        Category = $"Category {index}",
+                        Tag = $"Tag {index}",
+                        Price = 1000.0 * index,
                         Description = $"Description for Product {i}",
                         Image = $"product-{i}.jpg"
                     }
