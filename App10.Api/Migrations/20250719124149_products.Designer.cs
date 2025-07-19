@@ -4,6 +4,7 @@ using App10.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App10.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250719124149_products")]
+    partial class products
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,108 +127,6 @@ namespace App10.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Category = "Category 2",
-                            Description = "Description for Product 1",
-                            Image = "product-1.jpg",
-                            Name = "Product 1",
-                            Price = 1002.0,
-                            Tag = "Tag 2"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Category = "Category 3",
-                            Description = "Description for Product 2",
-                            Image = "product-2.jpg",
-                            Name = "Product 2",
-                            Price = 1003.0,
-                            Tag = "Tag 3"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Category = "Category 1",
-                            Description = "Description for Product 3",
-                            Image = "product-3.jpg",
-                            Name = "Product 3",
-                            Price = 1001.0,
-                            Tag = "Tag 1"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Category = "Category 2",
-                            Description = "Description for Product 4",
-                            Image = "product-4.jpg",
-                            Name = "Product 4",
-                            Price = 1002.0,
-                            Tag = "Tag 2"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Category = "Category 3",
-                            Description = "Description for Product 5",
-                            Image = "product-5.jpg",
-                            Name = "Product 5",
-                            Price = 1003.0,
-                            Tag = "Tag 3"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Category = "Category 1",
-                            Description = "Description for Product 6",
-                            Image = "product-6.jpg",
-                            Name = "Product 6",
-                            Price = 1001.0,
-                            Tag = "Tag 1"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Category = "Category 2",
-                            Description = "Description for Product 7",
-                            Image = "product-7.jpg",
-                            Name = "Product 7",
-                            Price = 1002.0,
-                            Tag = "Tag 2"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Category = "Category 3",
-                            Description = "Description for Product 8",
-                            Image = "product-8.jpg",
-                            Name = "Product 8",
-                            Price = 1003.0,
-                            Tag = "Tag 3"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Category = "Category 1",
-                            Description = "Description for Product 9",
-                            Image = "product-9.jpg",
-                            Name = "Product 9",
-                            Price = 1001.0,
-                            Tag = "Tag 1"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Category = "Category 2",
-                            Description = "Description for Product 10",
-                            Image = "product-10.jpg",
-                            Name = "Product 10",
-                            Price = 1002.0,
-                            Tag = "Tag 2"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
