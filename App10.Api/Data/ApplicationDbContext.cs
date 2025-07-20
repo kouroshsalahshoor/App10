@@ -25,7 +25,7 @@ namespace App10.Api.Data
                         Tag = $"Tag {index}",
                         Price = 1000.0 * index,
                         Description = $"Description for Product {i}",
-                        Image = $"product-{i}.jpg"
+                        Image = $"images/{i}.jpg"
                     }
                 );
             }
