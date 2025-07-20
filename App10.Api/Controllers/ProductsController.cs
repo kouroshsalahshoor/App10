@@ -97,8 +97,8 @@ namespace App10.Api.Controllers
                     Directory.CreateDirectory(imagesPath);
                 }
 
-                var filePath = Path.Combine(imagesPath, dto.File.FileName);
                 //delete file if exists
+                var filePath = Path.Combine(imagesPath, dto.File.FileName);
                 if (System.IO.File.Exists(filePath))
                 {
                     System.IO.File.Delete(filePath);
@@ -126,6 +126,97 @@ namespace App10.Api.Controllers
                 _response.Result = dto;
                 _response.StatusCode = HttpStatusCode.Created;
                 return CreatedAtRoute("GetItem", new { id = model.Id }, _response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccessful = false;
+                _response.Errors.Add(ex.Message);
+                _response.StatusCode = HttpStatusCode.BadRequest;
+            }
+
+            // Log the exception (optional)
+            return BadRequest(_response);
+
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(int id, [FromForm] ProductUpdateDto dto) //fromform for the image
+        {
+            try
+            {
+                if (dto == null || string.IsNullOrEmpty(dto.Name) || dto.Price <= 0 || dto.Id != id)
+                {
+                    _response.IsSuccessful = false;
+                    _response.Errors.Add("Invalid data.");
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
+
+                var model = await _db.Products.FirstOrDefaultAsync(x => x.Id == id);
+                if (model == null)
+                {
+                    _response.IsSuccessful = false;
+                    _response.Errors.Add("Item not found.");
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    return NotFound(_response);
+                }
+
+                if (ModelState.IsValid == false)
+                {
+                    _response.IsSuccessful = false;
+                    _response.Errors.Add("Invalid model state.");
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
+
+                if (dto.File != null && dto.File.Length > 0)
+                {
+                    if (dto.File.Length > 2 * 1024 * 1024) //2MB limit
+                    {
+                        _response.IsSuccessful = false;
+                        _response.Errors.Add("Image file size exceeds the limit of 2MB.");
+                        _response.StatusCode = HttpStatusCode.BadRequest;
+                        return BadRequest(_response);
+                    }
+                    var imagesPath = Path.Combine(_env.WebRootPath, "images");
+                    if (!Directory.Exists(imagesPath))
+                    {
+                        Directory.CreateDirectory(imagesPath);
+                    }
+
+                    //delete file if exists
+                    var filePath = Path.Combine(imagesPath, dto.File.FileName);
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+
+                    //old file deletion
+                    var oldFilePath = Path.Combine(_env.WebRootPath, model.Image);
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+
+                    //upload file
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await dto.File.CopyToAsync(stream);
+                    }
+                }
+                
+                model.Name = dto.Name;
+                model.Category = dto.Category;
+                model.Price = dto.Price;
+                model.Tag = dto.Tag;
+                model.Description = dto.Description;
+                model.Image = dto.File == null ? model.Image : $"images/{dto.File.FileName}"; //update image only if file is provided
+
+                _db.Products.Update(model);
+                await _db.SaveChangesAsync();
+
+                _response.StatusCode = HttpStatusCode.NoContent;
+                return Ok(_response);
             }
             catch (Exception ex)
             {

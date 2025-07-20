@@ -11,6 +11,7 @@ namespace App10.Api.Dtos
         public double Price { get; set; }
         public string? Tag { get; set; }
         public string? Description { get; set; }
-        public IFormFile? File { get; set; }
+        [Required]
+        public IFormFile File { get; set; } = null!; // Use null-forgiving operator to indicate that this will be set by the controller
     }
 }
