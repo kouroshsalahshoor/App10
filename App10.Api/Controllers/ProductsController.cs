@@ -204,7 +204,7 @@ namespace App10.Api.Controllers
                         await dto.File.CopyToAsync(stream);
                     }
                 }
-                
+
                 model.Name = dto.Name;
                 model.Category = dto.Category;
                 model.Price = dto.Price;
@@ -213,6 +213,63 @@ namespace App10.Api.Controllers
                 model.Image = dto.File == null ? model.Image : $"images/{dto.File.FileName}"; //update image only if file is provided
 
                 _db.Products.Update(model);
+                await _db.SaveChangesAsync();
+
+                _response.StatusCode = HttpStatusCode.NoContent;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccessful = false;
+                _response.Errors.Add(ex.Message);
+                _response.StatusCode = HttpStatusCode.BadRequest;
+            }
+
+            // Log the exception (optional)
+            return BadRequest(_response);
+
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                if (id <= 0)
+                {
+                    _response.IsSuccessful = false;
+                    _response.Errors.Add("Invalid data.");
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
+
+                var model = await _db.Products.FirstOrDefaultAsync(x => x.Id == id);
+                if (model == null)
+                {
+                    _response.IsSuccessful = false;
+                    _response.Errors.Add("Item not found.");
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    return NotFound(_response);
+                }
+
+                if (ModelState.IsValid == false)
+                {
+                    _response.IsSuccessful = false;
+                    _response.Errors.Add("Invalid model state.");
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
+
+                var imagesPath = Path.Combine(_env.WebRootPath, "images");
+
+                //old file deletion
+                var oldFilePath = Path.Combine(_env.WebRootPath, model.Image);
+                if (System.IO.File.Exists(oldFilePath))
+                {
+                    System.IO.File.Delete(oldFilePath);
+                }
+
+                _db.Products.Remove(model);
                 await _db.SaveChangesAsync();
 
                 _response.StatusCode = HttpStatusCode.NoContent;
